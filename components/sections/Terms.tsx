@@ -1,9 +1,8 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { Check, ShieldCheck, ArrowRight } from "lucide-react";
-import { useLead } from "@/components/lead/LeadProvider";
-import { asset, type ServiceId } from "@/lib/config";
+import { LeadButton } from "@/components/lead/LeadButton";
+import { type ServiceId } from "@/lib/config";
+import { Img } from "@/components/ui/Img";
 import { SectionHeader, IconBox, btn } from "@/components/ui";
 
 const plans: { name: string; tagline: string; price: string; unit: string; isPopular: boolean; preset: ServiceId[]; features: string[] }[] = [
@@ -37,7 +36,6 @@ const plans: { name: string; tagline: string; price: string; unit: string; isPop
 ];
 
 export default function Terms() {
-  const { open } = useLead();
   return (
     <section id="terms" className="w-full py-20 md:py-28 bg-paper-2">
       <div className="container-x">
@@ -45,17 +43,8 @@ export default function Terms() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
           {plans.map((plan, idx) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              className={
-                "flex flex-col rounded-2xl p-7 md:p-8 border " +
-                (plan.isPopular ? "bg-ink text-white border-ink" : "bg-white text-ink border-line")
-              }
-            >
+            <div key={plan.name} className={"reveal " + ("flex flex-col rounded-2xl p-7 md:p-8 border " +
+                (plan.isPopular ? "bg-ink text-white border-ink" : "bg-white text-ink border-line"))} style={{ transitionDelay: (idx * 0.08) + "s" }}>
               <div className="flex items-center justify-between">
                 <h3 className="font-display font-semibold text-[22px]">{plan.name}</h3>
                 {plan.isPopular && <span className="text-[12px] font-semibold px-2.5 py-1 rounded-md bg-accent text-white">Выгодно</span>}
@@ -76,31 +65,24 @@ export default function Terms() {
                 ))}
               </ul>
 
-              <button
-                onClick={() =>
-                  open({
+              <LeadButton
+                lead={{
                     title: "Рассчитаем стоимость: «" + plan.name + "»",
                     subtitle: "Назовём точную цену после короткого звонка — она фиксируется в договоре до старта работ.",
                     cta: "Получить расчёт",
                     source: "terms-" + idx,
                     preset: plan.preset,
-                  })
-                }
+                  }}
                 className={(plan.isPopular ? btn.primary : btn.dark) + " mt-auto w-full"}
               >
                 Рассчитать стоимость <ArrowRight className="w-4 h-4" />
-              </button>
-            </motion.div>
+              </LeadButton>
+            </div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-5 md:mt-6 relative rounded-2xl overflow-hidden"
-        >
-          <img src={asset("/media/stairs.webp")} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+        <div className="reveal mt-5 md:mt-6 relative rounded-2xl overflow-hidden">
+          <Img name="stairs" alt="" ratio="16:9" className="absolute inset-0 w-full h-full object-cover" sizes="100vw" />
           <div className="absolute inset-0 bg-ink/80" />
           <div className="relative p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-5 text-white">
             <IconBox icon={ShieldCheck} dark />
@@ -109,7 +91,7 @@ export default function Terms() {
               <p className="text-white/65 text-[15px] mt-1">Если специалист не прошёл испытательный срок — однократно подберём замену бесплатно.</p>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

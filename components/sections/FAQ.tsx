@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Phone } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import { site } from "@/lib/config";
@@ -78,7 +77,7 @@ export default function FAQ() {
   return (
     <section id="faq" className="bg-paper py-20 md:py-28">
       <div className="container-x grid lg:grid-cols-12 gap-10 lg:gap-8">
-        <div className="lg:col-span-4 lg:pr-6">
+        <div className="lg:col-span-4 lg:pr-6 min-w-0">
           <h2 className="font-display text-[30px] sm:text-[36px] md:text-[44px] font-semibold text-ink leading-[1.08] tracking-[-0.025em]">Частые вопросы</h2>
           <p className="mt-5 text-[16px] text-muted leading-relaxed">Коротко о том, что обычно спрашивают собственники и коммерческие директора.</p>
 
@@ -103,7 +102,7 @@ export default function FAQ() {
           </div>
         </div>
 
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8 min-w-0">
           <div className="inline-flex p-1 rounded-lg bg-paper-2 border border-line mb-4 max-w-full overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <button
@@ -114,7 +113,7 @@ export default function FAQ() {
                 }}
                 className={
                   "px-4 md:px-5 h-10 rounded-md text-[14px] font-medium whitespace-nowrap transition " +
-                  (activeTab === tab.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink")
+                  (activeTab === tab.id ? "bg-white text-ink shadow-sm" : "text-ink/70 hover:text-ink")
                 }
               >
                 {tab.label}
@@ -127,25 +126,20 @@ export default function FAQ() {
               const isOpen = openIndex === index;
               return (
                 <div key={item.question} className="border-b border-line">
-                  <button onClick={() => setOpenIndex(isOpen ? null : index)} className="w-full flex justify-between items-center gap-6 text-left py-5 md:py-6">
+                  <button onClick={() => setOpenIndex(isOpen ? null : index)} aria-expanded={isOpen} className="w-full flex justify-between items-center gap-6 text-left py-5 md:py-6">
                     <span className="text-[16px] md:text-[17px] font-semibold text-ink">{item.question}</span>
                     <span className={"w-8 h-8 rounded-md border flex items-center justify-center shrink-0 transition " + (isOpen ? "border-accent text-accent" : "border-line text-muted")}>
                       {isOpen ? <Minus size={16} /> : <Plus size={16} />}
                     </span>
                   </button>
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-6 pr-14 text-[15px] text-ink/70 leading-[1.7]">{item.answer}</div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div
+                    className={"grid transition-[grid-template-rows,opacity] duration-300 ease-out " + (isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0")}
+                    aria-hidden={!isOpen}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="pb-6 pr-4 sm:pr-14 text-[15px] text-ink/75 leading-[1.7]">{item.answer}</div>
+                    </div>
+                  </div>
                 </div>
               );
             })}

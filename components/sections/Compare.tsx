@@ -1,8 +1,6 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { Check, X, Minus } from "lucide-react";
-import { useLead } from "@/components/lead/LeadProvider";
+import { LeadButton } from "@/components/lead/LeadButton";
 import { SectionHeader, btn } from "@/components/ui";
 
 type V = "yes" | "no" | "part";
@@ -24,7 +22,6 @@ function Mark({ v, hl }: { v: V; hl?: boolean }) {
 }
 
 export default function Compare() {
-  const { open } = useLead();
   return (
     <section className="w-full py-20 md:py-28 bg-paper">
       <div className="container-x">
@@ -32,29 +29,21 @@ export default function Compare() {
           title="Почему не штатный HR и не обычное агентство"
           description="Честное сравнение — решайте сами."
           action={
-            <button
-              onClick={() =>
-                open({
+            <LeadButton
+              lead={{
                   title: "Сравните на своей задаче",
                   subtitle: "Посчитаем, во что вам обходится вакансия сейчас и сколько будет стоить закрыть её с нами.",
                   cta: "Получить расчёт",
                   source: "compare",
-                })
-              }
+                }}
               className={btn.dark}
             >
-              Посчитать выгоду для моей компании
-            </button>
+              Посчитать выгоду
+            </LeadButton>
           }
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="rounded-2xl bg-white border border-line overflow-hidden"
-        >
+        <div className="reveal rounded-2xl bg-white border border-line overflow-hidden">
           <div className="grid grid-cols-[1.6fr_repeat(3,1fr)] text-[12px] sm:text-[14px] font-semibold border-b border-line">
             <div className="p-3 sm:p-5 text-muted">Критерий</div>
             <div className="p-3 sm:p-5 text-center text-muted">Штатный HR</div>
@@ -75,7 +64,7 @@ export default function Compare() {
               </div>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

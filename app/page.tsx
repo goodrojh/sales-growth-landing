@@ -1,4 +1,3 @@
-"use client";
 import Hero from "@/components/sections/Hero";
 import Pains from "@/components/sections/Pains";
 import Services from "@/components/sections/Services";
@@ -10,7 +9,8 @@ import Terms from "@/components/sections/Terms";
 import Quiz from "@/components/sections/Quiz";
 import Deliverables from "@/components/sections/Deliverables";
 import FAQ from "@/components/sections/FAQ";
-import Footer, { MobileCtaBar } from "@/components/sections/Footer";
+import Footer from "@/components/sections/Footer";
+import MobileCtaBar from "@/components/sections/MobileCtaBar";
 
 export default function Home() {
   return (

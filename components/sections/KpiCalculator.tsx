@@ -1,12 +1,16 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { Info } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
-import { asset } from "@/lib/config";
+import { Img } from "@/components/ui/Img";
 import { btn } from "@/components/ui";
 
-const rub = (n: number) => Math.round(n).toLocaleString("ru-RU") + " ₽";
+// Знак ₽ выводится системным шрифтом: иначе браузер докачивает ещё ~170 КБ шрифтов (latin-ext)
+const rub = (n: number) => (
+  <>
+    {Math.round(n).toLocaleString("ru-RU")}&nbsp;<span className="rub">₽</span>
+  </>
+);
 
 function coef(p: number) {
   if (p < 80) return 0;
@@ -14,7 +18,7 @@ function coef(p: number) {
   return Math.min(1.5, 1 + ((p - 100) / 100) * 2.5);
 }
 
-function Slider({ label, value, min, max, step, onChange, fmt }: { label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void; fmt: (v: number) => string }) {
+function Slider({ label, value, min, max, step, onChange, fmt }: { label: string; value: number; min: number; max: number; step: number; onChange: (v: number) => void; fmt: (v: number) => React.ReactNode }) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <label className="block">
@@ -51,12 +55,12 @@ export default function KpiCalculator() {
   }, [salary, target, rev, margin]);
 
   return (
-    <section id="calc" className="relative w-full py-20 md:py-28 bg-ink overflow-hidden grain">
-      <img src={asset("/media/kpi.webp")} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" loading="lazy" />
+    <section id="calc" className="relative w-full py-20 md:py-28 bg-ink overflow-hidden">
+      <Img name="kpi" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" sizes="100vw" />
       <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/92 to-ink/70" />
 
       <div className="container-x relative z-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-        <div className="lg:col-span-6 lg:pr-10">
+        <div className="lg:col-span-6 lg:pr-10 min-w-0">
           <h2 className="font-display text-[30px] sm:text-[36px] md:text-[44px] font-semibold text-white leading-[1.08] tracking-[-0.025em]">
             Премия, которую менеджер <span className="text-accent-soft">хочет</span> заработать
           </h2>
@@ -74,13 +78,7 @@ export default function KpiCalculator() {
           </ul>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="lg:col-span-6 rounded-2xl bg-white/[0.05] backdrop-blur-2xl border border-white/12 p-6 md:p-8"
-        >
+        <div className="reveal lg:col-span-6 min-w-0 rounded-2xl bg-ink-2/90 border border-white/12 p-6 md:p-8">
           <div className="space-y-7">
             <Slider label="Оклад" value={salary} min={30000} max={150000} step={5000} onChange={setSalary} fmt={rub} />
             <Slider label="Целевая премия (при 100% плана)" value={target} min={10000} max={150000} step={5000} onChange={setTarget} fmt={rub} />
@@ -122,7 +120,7 @@ export default function KpiCalculator() {
           >
             Хочу такой для своей команды
           </button>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

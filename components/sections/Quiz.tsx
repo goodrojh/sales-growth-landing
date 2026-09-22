@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, Gift } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import type { ServiceId } from "@/lib/config";
@@ -84,7 +83,7 @@ export default function Quiz() {
   return (
     <section className="w-full py-20 md:py-28 bg-paper">
       <div className="container-x grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
-        <div className="lg:col-span-5 lg:pr-8">
+        <div className="lg:col-span-5 lg:pr-8 min-w-0">
           <h2 className="font-display text-[30px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.08] tracking-[-0.025em] text-ink">
             Узнайте стоимость и свою скидку
           </h2>
@@ -100,7 +99,7 @@ export default function Quiz() {
           </ul>
         </div>
 
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-7 min-w-0">
           <div className="rounded-2xl bg-white border border-line p-5 sm:p-7">
             <div className="flex items-center gap-4 mb-6">
               <div className="flex-1 grid grid-cols-4 gap-1.5">
@@ -113,9 +112,8 @@ export default function Quiz() {
               </span>
             </div>
 
-            <AnimatePresence mode="wait">
-              {!done ? (
-                <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                          {!done ? (
+                <div key={step} className="anim-step">
                   <h3 className="font-display text-[20px] font-semibold text-ink">{q.q}</h3>
                   <div className="mt-5 grid sm:grid-cols-2 gap-2.5">
                     {q.options.map((o) => {
@@ -137,9 +135,9 @@ export default function Quiz() {
                       );
                     })}
                   </div>
-                </motion.div>
+                </div>
               ) : (
-                <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col sm:flex-row sm:items-center gap-5">
+                <div key="done" className="anim-step flex flex-col sm:flex-row sm:items-center gap-5">
                   <span className="w-12 h-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
                     <Gift className="w-6 h-6" strokeWidth={1.6} />
                   </span>
@@ -152,15 +150,14 @@ export default function Quiz() {
                   <button onClick={finish} className={btn.primary}>
                     Получить расчёт
                   </button>
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
 
             <div className="mt-6 pt-5 border-t border-line flex items-center justify-between">
               <button
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
                 disabled={step === 0}
-                className="inline-flex items-center gap-2 text-[14px] font-medium text-muted hover:text-ink disabled:opacity-30 transition"
+                className="inline-flex items-center gap-2 h-10 -ml-1 px-1 text-[14px] font-medium text-muted hover:text-ink disabled:opacity-30 transition"
               >
                 <ArrowLeft className="w-4 h-4" /> Назад
               </button>

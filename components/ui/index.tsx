@@ -1,6 +1,4 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 
 /** Единый заголовок секции: заголовок слева, описание справа (на десктопе). */
 export function SectionHeader({
@@ -17,13 +15,7 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={"grid md:grid-cols-12 gap-5 md:gap-8 items-start mb-10 md:mb-14 " + className}
-    >
+    <div className={"reveal " + ("grid md:grid-cols-12 gap-5 md:gap-8 items-start mb-10 md:mb-14 " + className)}>
       <h2
         className={
           "md:col-span-7 font-display font-semibold text-[30px] sm:text-[36px] md:text-[44px] leading-[1.08] tracking-[-0.025em] " +
@@ -38,7 +30,7 @@ export function SectionHeader({
           {action}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -74,7 +66,7 @@ export const btn = {
   light:
     "inline-flex items-center justify-center gap-2 whitespace-nowrap h-12 px-6 rounded-lg bg-white text-ink text-[15px] font-semibold border border-line hover:border-ink/30 active:scale-[0.98] transition",
   ghostDark:
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap h-12 px-6 rounded-lg bg-white/10 text-white text-[15px] font-semibold border border-white/20 backdrop-blur-md hover:bg-white/20 active:scale-[0.98] transition",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap h-12 px-6 rounded-lg bg-white/10 text-white text-[15px] font-semibold border border-white/25 hover:bg-white/20 active:scale-[0.98] transition",
   white:
     "inline-flex items-center justify-center gap-2 whitespace-nowrap h-12 px-6 rounded-lg bg-white text-ink text-[15px] font-semibold hover:bg-paper-2 active:scale-[0.98] transition",
 };

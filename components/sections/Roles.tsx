@@ -1,8 +1,6 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { Briefcase, Crown, Handshake, Building2, Headset, Store, Truck, FileSpreadsheet, Globe2, KeyRound, ArrowUpRight } from "lucide-react";
-import { useLead } from "@/components/lead/LeadProvider";
+import { LeadButton } from "@/components/lead/LeadButton";
 import { SectionHeader, IconBox, btn } from "@/components/ui";
 
 const roles = [
@@ -19,7 +17,6 @@ const roles = [
 ];
 
 export default function Roles() {
-  const { open } = useLead();
   return (
     <section className="bg-paper-2 py-20 md:py-28">
       <div className="container-x">
@@ -27,50 +24,38 @@ export default function Roles() {
           title="Кого подбираем"
           description="Только продажи — поэтому знаем, чем сильный продавец отличается от того, кто хорошо проходит собеседования."
           action={
-            <button
-              onClick={() =>
-                open({
+            <LeadButton
+              lead={{
                   title: "Нужна другая роль в продажах?",
                   subtitle: "Опишите позицию — скажем, как быстро закроем и сколько это будет стоить.",
                   cta: "Обсудить вакансию",
                   source: "roles-other",
                   preset: ["podbor"],
-                })
-              }
+                }}
               className={btn.dark}
             >
               Нужна другая роль
-            </button>
+            </LeadButton>
           }
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           {roles.map((r, i) => (
-            <motion.button
-              key={r.name}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: (i % 5) * 0.06, duration: 0.4 }}
-              onClick={() =>
-                open({
+            <LeadButton key={r.name} lead={{
                   title: "Подберём: " + r.name.toLowerCase(),
                   subtitle: "Оставьте контакты — уточним требования и запустим поиск.",
                   cta: "Начать подбор",
                   source: "role",
                   preset: ["podbor"],
                   extra: { role: r.name },
-                })
-              }
-              className="group text-left bg-white border border-line rounded-xl p-5 flex flex-col h-full transition hover:border-accent/40 hover:shadow-[0_12px_32px_rgba(13,21,38,0.07)]"
-            >
+                }} className="reveal group text-left bg-white border border-line rounded-xl p-5 flex flex-col h-full transition hover:border-accent/40 hover:shadow-[0_12px_32px_rgba(13,21,38,0.07)]" style={{ transitionDelay: ((i % 5) * 0.06) + "s" }}>
               <div className="flex items-start justify-between">
                 <IconBox icon={r.icon} size="sm" />
                 <ArrowUpRight className="w-4 h-4 text-muted/60 transition group-hover:text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </div>
               <h3 className="mt-5 font-semibold text-[15px] text-ink leading-snug">{r.name}</h3>
               <p className="mt-1.5 text-[13px] text-muted leading-[1.5]">{r.d}</p>
-            </motion.button>
+            </LeadButton>
           ))}
         </div>
       </div>
