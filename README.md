@@ -1,6 +1,6 @@
 # Лендинг «Вектор продаж» — подбор, обучение и KPI для отделов продаж
 
-Next.js (App Router) + Tailwind CSS v4 + framer-motion + lucide-react. Статический экспорт, деплой на GitHub Pages через Actions.
+Next.js (App Router) + Tailwind CSS v4 + framer-motion + lucide-react. Статический экспорт, публикация на GitHub Pages командой `npm run deploy` (ветка `gh-pages`).
 
 ## Запуск
 ```bash

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "node scripts/deploy.cjs"
   },
   "dependencies": {
     "framer-motion": "^13.4.0",
