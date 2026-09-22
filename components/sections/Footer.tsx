@@ -15,7 +15,7 @@ export default function Footer() {
       {/* CTA */}
       <div className="relative overflow-hidden">
         <Img name="city" alt="" ratio="16:9" className="absolute inset-0 w-full h-full object-cover" sizes="100vw" />
-        <BgVideo src="/media/city.mp4" rootMargin="200px" />
+        <BgVideo src="/media/city.mp4" rootMargin="200px" lazy />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/50 to-ink" />
 
         <div className="container-x relative z-10 py-24 md:py-36 grid lg:grid-cols-12 gap-10 items-end">

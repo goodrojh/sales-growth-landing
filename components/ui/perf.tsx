@@ -28,14 +28,14 @@ export function Reveal({ as: Tag = "div", className = "", children, ...rest }: {
 }
 
 /** Экономное видео: грузится после загрузки страницы, играет только в зоне видимости, не грузится при экономии трафика. */
-export function useSmartVideo(getSrc: () => string, opts: { deferUntilLoad?: boolean; rootMargin?: string } = {}) {
+export function useSmartVideo(getSrc: () => string, opts: { deferUntilLoad?: boolean; rootMargin?: string; enabled?: boolean } = {}) {
   const ref = useRef<HTMLVideoElement>(null);
   const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
     const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (conn?.saveData || reduce) return;
+    if (conn?.saveData || reduce || opts.enabled === false) return;
 
     let cancelled = false;
     const start = () => {
@@ -51,7 +51,7 @@ export function useSmartVideo(getSrc: () => string, opts: { deferUntilLoad?: boo
       window.removeEventListener("load", start);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [opts.enabled]);
 
   useEffect(() => {
     const v = ref.current;
@@ -76,9 +76,38 @@ export function fadeInVideo(e: React.SyntheticEvent<HTMLVideoElement>) {
 }
 
 /** Фоновое видео секции: грузится после загрузки страницы и играет только в зоне видимости. */
-export function BgVideo({ src, rootMargin = "0px", className = "absolute inset-0 w-full h-full object-cover" }: { src: string; rootMargin?: string; className?: string }) {
-  const video = useSmartVideo(() => (process.env.NEXT_PUBLIC_BASE_PATH || "") + src, { deferUntilLoad: true, rootMargin });
-  if (!video.src) return null;
+export function BgVideo({
+  src,
+  mobileSrc,
+  rootMargin = "0px",
+  lazy = false,
+  className = "absolute inset-0 w-full h-full object-cover",
+}: {
+  src: string;
+  mobileSrc?: string;
+  rootMargin?: string;
+  /** Грузить видео только когда блок приближается к экрану */
+  lazy?: boolean;
+  className?: string;
+}) {
+  const sentinel = useRef<HTMLSpanElement>(null);
+  const [near, setNear] = useState(!lazy);
+  useEffect(() => {
+    if (!lazy || !sentinel.current) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        setNear(true);
+        io.disconnect();
+      }
+    }, { rootMargin: "600px 0px" });
+    io.observe(sentinel.current);
+    return () => io.disconnect();
+  }, [lazy]);
+  const video = useSmartVideo(
+    () => (process.env.NEXT_PUBLIC_BASE_PATH || "") + (mobileSrc && window.matchMedia("(max-width: 767px)").matches ? mobileSrc : src),
+    { deferUntilLoad: true, rootMargin, enabled: near }
+  );
+  if (!video.src) return lazy ? <span ref={sentinel} className="absolute inset-0 pointer-events-none" aria-hidden="true" /> : null;
   return (
     <video
       ref={video.ref}
@@ -86,7 +115,8 @@ export function BgVideo({ src, rootMargin = "0px", className = "absolute inset-0
       muted
       loop
       playsInline
-      preload="none"
+      autoPlay
+      preload="auto"
       onPlaying={fadeInVideo}
       style={{ opacity: 0, transition: "opacity .8s ease" }}
       className={className}

@@ -39,16 +39,22 @@ export function LeadProvider({ children }: { children: React.ReactNode }) {
     setOpts(o);
   }, []);
 
-  // Подгружаем окно заявки в фоне после загрузки страницы — первый клик открывает его мгновенно
+  // Подгружаем окно заявки при первом взаимодействии (касание, прокрутка, наведение) — не мешает загрузке страницы
   useEffect(() => {
+    const events = ["pointerdown", "touchstart", "scroll", "keydown", "mousemove"] as const;
+    let done = false;
     const pre = () => {
-      const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number }).requestIdleCallback;
-      if (idle) idle(() => loadModal());
-      else setTimeout(loadModal, 1500);
+      if (done) return;
+      done = true;
+      events.forEach((e) => window.removeEventListener(e, pre));
+      loadModal();
     };
-    if (document.readyState === "complete") pre();
-    else window.addEventListener("load", pre, { once: true });
-    return () => window.removeEventListener("load", pre);
+    events.forEach((e) => window.addEventListener(e, pre, { passive: true, once: true }));
+    const t = window.setTimeout(pre, 8000);
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, pre));
+      clearTimeout(t);
+    };
   }, []);
   const close = useCallback(() => setOpts(null), []);
 
