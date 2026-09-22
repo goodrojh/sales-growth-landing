@@ -194,10 +194,10 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
 
             <div className="mt-6 grid gap-3">
               {variant === "full" && (
-                <input name="company" placeholder="Название компании" className={field} autoComplete="organization" />
+                <input name="company" placeholder="Наименование организации" className={field} autoComplete="organization" />
               )}
               <div className={variant === "full" ? "grid sm:grid-cols-2 gap-3" : "grid gap-3"}>
-                <input name="name" placeholder="Ваше имя" className={field} autoComplete="name" required />
+                <input name="name" placeholder="Ф.И.О." className={field} autoComplete="name" required />
                 {variant === "full" && <input name="position" placeholder="Должность" className={field} autoComplete="organization-title" />}
               </div>
               <input
@@ -212,12 +212,12 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
                 autoComplete="tel"
                 required
               />
-              {variant === "full" && <input name="email" type="email" placeholder="Эл. почта" className={field} autoComplete="email" />}
+              {variant === "full" && <input name="email" type="email" placeholder="Электронная почта" className={field} autoComplete="email" />}
             </div>
 
             {variant === "full" && (
               <fieldset className="mt-5">
-                <legend className="text-[13px] font-semibold text-ink/70 mb-2.5">Какая помощь нужна</legend>
+                <legend className="text-[13px] font-semibold text-ink/70 mb-2.5">Отметьте, какая помощь необходима</legend>
                 <div className="grid sm:grid-cols-2 gap-2">
                   {services.map((s) => {
                     const on = picked.includes(s.id);

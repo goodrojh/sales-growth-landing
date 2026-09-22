@@ -50,7 +50,7 @@ function Counter({ to, prefix = "", suffix = "" }: { to: number; prefix?: string
 
 const stats = [
   { value: <Counter to={20} suffix="+" />, title: "лет опыта", text: "в построении систем продаж" },
-  { value: <Counter to={2} prefix="×" />, title: "рост выручки", text: "и маржинальной прибыли" },
+  { value: <Counter to={2} prefix="×" />, title: "рост валовой выручки", text: "и маржинальной прибыли" },
   { value: <Counter to={70} prefix="+" suffix="%" />, title: "эффективность", text: "персонала отдела продаж" },
   { value: <Counter to={1} />, title: "бесплатная замена", text: "если не прошёл испытательный срок" },
 ];

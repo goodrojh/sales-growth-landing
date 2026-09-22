@@ -57,7 +57,7 @@ const steps = [
   {
     n: "02",
     img: "/media/screening.webp",
-    title: "Подбор по компетенциям",
+    title: "Скрининг по компетенциям",
     text: "Интервью и кейсы на реальные ситуации продаж. Отсекаем тех, кто хорошо говорит, но не закрывает сделки.",
     mock: (
       <div className="w-full bg-white/90 backdrop-blur-md rounded-lg border border-white p-3.5 shadow-xl">

@@ -17,10 +17,10 @@ const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
 export const asset = (p: string) => base + p;
 
 export const services = [
-  { id: "podbor", label: "Подбор специалистов" },
-  { id: "obuchenie", label: "Система обучения" },
-  { id: "kpi", label: "Система премирования (KPI)" },
-  { id: "complex", label: "Комплекс: подбор + обучение + KPI" },
+  { id: "podbor", label: "Услуга подбора" },
+  { id: "obuchenie", label: "Построение системы обучения" },
+  { id: "kpi", label: "Разработка системы премирования (KPI)" },
+  { id: "complex", label: "Комплексная услуга (подбор + обучение + KPI)" },
 ] as const;
 
 export type ServiceId = (typeof services)[number]["id"];

@@ -58,16 +58,16 @@ export default function Footer() {
             <button
               onClick={() =>
                 open({
-                  title: "Перезвоним за 15 минут",
-                  subtitle: "Обсудим задачу, ответим на вопросы и предложим следующий шаг. Ни к чему не обязывает.",
-                  cta: "Жду звонка",
-                  source: "footer-cta",
-                  variant: "quick",
+                  title: "Заполните анкету, мы свяжемся с вами",
+                  subtitle: "Отметьте, какая помощь необходима, — подготовим предложение под вашу задачу.",
+                  cta: "Отправить анкету",
+                  source: "footer-anketa",
+                  variant: "full",
                 })
               }
               className={btn.primary + " h-14 w-full text-[16px]"}
             >
-              Заказать звонок <ArrowRight className="w-4 h-4" />
+              Заполнить анкету <ArrowRight className="w-4 h-4" />
             </button>
             <a href={site.phoneHref} className={btn.ghostDark + " h-14 w-full text-[16px]"}>
               <Phone className="w-4 h-4" /> {site.phone}

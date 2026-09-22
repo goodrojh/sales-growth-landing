@@ -86,7 +86,7 @@ export default function Services() {
 
             <div className="mt-auto pt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
               {[
-                { icon: UserSearch, t: "Подбор по компетенциям", d: "Проверяем навыки продаж, а не умение писать резюме." },
+                { icon: UserSearch, t: "Скрининг по компетенциям", d: "Проверяем навыки продаж, а не умение писать резюме." },
                 { icon: Users, t: "Отзывы о кандидатах", d: "Собираем рекомендации с прошлых мест работы." },
               ].map((x) => (
                 <div key={x.t} className="flex flex-col gap-4 p-5 rounded-xl bg-ink/50 backdrop-blur-xl border border-white/10">
