@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Gift } from "lucide-react";
+import { ArrowLeft, Check, Gift } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import type { ServiceId } from "@/lib/config";
+import { btn } from "@/components/ui";
 
 const questions: { q: string; key: string; options: { label: string; value: string }[] }[] = [
   {
@@ -13,7 +14,7 @@ const questions: { q: string; key: string; options: { label: string; value: stri
       { label: "Найти продавцов / РОП", value: "podbor" },
       { label: "Научить команду продавать", value: "obuchenie" },
       { label: "Замотивировать на результат", value: "kpi" },
-      { label: "Всё сразу — перезапустить отдел", value: "complex" },
+      { label: "Перезапустить отдел целиком", value: "complex" },
     ],
   },
   {
@@ -40,7 +41,7 @@ const questions: { q: string; key: string; options: { label: string; value: stri
     q: "Когда хотите начать?",
     key: "when",
     options: [
-      { label: "Срочно, на этой неделе", value: "сейчас" },
+      { label: "На этой неделе", value: "сейчас" },
       { label: "В течение месяца", value: "месяц" },
       { label: "Присматриваюсь", value: "позже" },
     ],
@@ -58,19 +59,17 @@ export default function Quiz() {
   const { open } = useLead();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const q = questions[step];
   const done = step >= questions.length;
+  const q = questions[Math.min(step, questions.length - 1)];
   const discount = discountOf(answers);
 
   const pick = (v: string) => {
     setAnswers((a) => ({ ...a, [q.key]: v }));
-    setStep((s) => s + 1);
+    setTimeout(() => setStep((s) => s + 1), 180);
   };
 
   const finish = () => {
-    const labels = Object.fromEntries(
-      questions.map((qq) => [qq.q, qq.options.find((o) => o.value === answers[qq.key])?.label ?? "—"])
-    );
+    const labels = Object.fromEntries(questions.map((qq) => [qq.q, qq.options.find((o) => o.value === answers[qq.key])?.label ?? "—"]));
     open({
       title: discount ? `Ваша скидка — до ${discount}%. Куда отправить расчёт?` : "Расчёт готов. Куда отправить?",
       subtitle: "Эксперт позвонит, уточнит 2–3 детали и назовёт точную стоимость с учётом скидок.",
@@ -83,79 +82,90 @@ export default function Quiz() {
   };
 
   return (
-    <section className="w-full px-4 md:px-8 py-20 md:py-28 bg-paper-2">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="text-[12px] font-bold tracking-[0.18em] uppercase text-amber-deep">1 минута · 4 вопроса</span>
-          <h2 className="font-display text-[28px] sm:text-4xl md:text-[46px] font-semibold leading-[1.1] tracking-[-0.02em] mt-3">
-            Узнайте стоимость и&nbsp;свою скидку
+    <section className="w-full py-20 md:py-28 bg-paper">
+      <div className="container-x grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+        <div className="lg:col-span-5 lg:pr-8">
+          <h2 className="font-display text-[30px] sm:text-[36px] md:text-[44px] font-semibold leading-[1.08] tracking-[-0.025em] text-ink">
+            Узнайте стоимость и свою скидку
           </h2>
+          <p className="mt-5 text-muted text-[16px] leading-relaxed">
+            Четыре вопроса — и мы подготовим расчёт под вашу задачу. Скидки считаются автоматически.
+          </p>
+          <ul className="mt-8 space-y-3 text-[15px] text-ink/80">
+            {["−10% за комплекс услуг", "−10% за каждого специалиста после второго", "Цена фиксируется до старта"].map((t) => (
+              <li key={t} className="flex items-center gap-3">
+                <Check className="w-4 h-4 text-accent" strokeWidth={2.2} /> {t}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="rounded-[28px] bg-white border border-line shadow-xl shadow-ink/5 p-5 sm:p-8 md:p-10 min-h-[420px] flex flex-col">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="flex-1 h-1.5 rounded-full bg-paper-2 overflow-hidden">
-              <motion.div className="h-full bg-amber rounded-full" animate={{ width: (Math.min(step, questions.length) / questions.length) * 100 + "%" }} />
+        <div className="lg:col-span-7">
+          <div className="rounded-2xl bg-white border border-line p-5 sm:p-7">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex-1 grid grid-cols-4 gap-1.5">
+                {questions.map((_, i) => (
+                  <div key={i} className={"h-1 rounded-full transition-colors " + (i < step ? "bg-accent" : "bg-paper-2")} />
+                ))}
+              </div>
+              <span className="text-[13px] font-medium text-muted tabular-nums">
+                {Math.min(step + 1, questions.length)} / {questions.length}
+              </span>
             </div>
-            <span className="text-[13px] font-bold text-muted tabular-nums">
-              {Math.min(step + 1, questions.length)}/{questions.length}
-            </span>
-          </div>
 
-          <AnimatePresence mode="wait">
-            {!done ? (
-              <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="flex-1">
-                <h3 className="font-display text-xl md:text-2xl font-semibold">{q.q}</h3>
-                <div className="mt-6 grid sm:grid-cols-2 gap-3">
-                  {q.options.map((o) => (
-                    <button
-                      key={o.value}
-                      onClick={() => pick(o.value)}
-                      className={
-                        "text-left rounded-2xl border px-5 py-4 text-[15px] font-semibold transition hover:border-amber hover:bg-amber/5 active:scale-[0.98] " +
-                        (answers[q.key] === o.value ? "border-amber bg-amber/10" : "border-line")
-                      }
-                    >
-                      {o.label}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div key="done" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="flex-1 flex flex-col items-center justify-center text-center">
-                <div className="w-16 h-16 rounded-2xl bg-amber flex items-center justify-center shadow-[0_12px_32px_rgba(242,165,58,0.4)]">
-                  <Gift className="w-8 h-8 text-ink" />
-                </div>
-                <h3 className="font-display text-2xl md:text-3xl font-semibold mt-6">
-                  {discount ? (
-                    <>
-                      Вам доступна скидка <span className="text-amber-deep">до {discount}%</span>
-                    </>
-                  ) : (
-                    "Готово! Подготовим расчёт"
-                  )}
-                </h3>
-                <p className="text-muted mt-3 max-w-md">Оставьте телефон — назовём точную стоимость и сроки под вашу задачу.</p>
-                <button onClick={finish} className="mt-7 w-full sm:w-auto rounded-full px-10 h-14 bg-ink text-white font-bold hover:bg-ink-3 transition active:scale-95">
-                  Получить расчёт
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            <AnimatePresence mode="wait">
+              {!done ? (
+                <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+                  <h3 className="font-display text-[20px] font-semibold text-ink">{q.q}</h3>
+                  <div className="mt-5 grid sm:grid-cols-2 gap-2.5">
+                    {q.options.map((o) => {
+                      const on = answers[q.key] === o.value;
+                      return (
+                        <button
+                          key={o.value}
+                          onClick={() => pick(o.value)}
+                          className={
+                            "flex items-center gap-3 text-left rounded-lg border px-4 py-2.5 min-h-12 text-[14px] font-medium transition " +
+                            (on ? "border-accent bg-accent/[0.06] text-ink" : "border-line text-ink/80 hover:border-ink/25")
+                          }
+                        >
+                          <span className={"w-4 h-4 rounded-full border flex items-center justify-center shrink-0 " + (on ? "border-accent" : "border-ink/25")}>
+                            {on && <span className="w-2 h-2 rounded-full bg-accent" />}
+                          </span>
+                          {o.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col sm:flex-row sm:items-center gap-5">
+                  <span className="w-12 h-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <Gift className="w-6 h-6" strokeWidth={1.6} />
+                  </span>
+                  <div className="flex-1">
+                    <h3 className="font-display text-[20px] font-semibold text-ink">
+                      {discount ? `Вам доступна скидка до ${discount}%` : "Готово! Подготовим расчёт"}
+                    </h3>
+                    <p className="text-muted text-[14px] mt-1">Оставьте телефон — назовём точную стоимость и сроки.</p>
+                  </div>
+                  <button onClick={finish} className={btn.primary}>
+                    Получить расчёт
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          <div className="mt-8 flex items-center justify-between">
-            <button
-              onClick={() => setStep((s) => Math.max(0, s - 1))}
-              disabled={step === 0}
-              className="inline-flex items-center gap-2 text-[14px] font-semibold text-muted disabled:opacity-0 transition"
-            >
-              <ArrowLeft className="w-4 h-4" /> Назад
-            </button>
-            {!done && answers[q?.key] && (
-              <button onClick={() => setStep((s) => s + 1)} className="inline-flex items-center gap-2 text-[14px] font-semibold text-ink">
-                Далее <ArrowRight className="w-4 h-4" />
+            <div className="mt-6 pt-5 border-t border-line flex items-center justify-between">
+              <button
+                onClick={() => setStep((s) => Math.max(0, s - 1))}
+                disabled={step === 0}
+                className="inline-flex items-center gap-2 text-[14px] font-medium text-muted hover:text-ink disabled:opacity-30 transition"
+              >
+                <ArrowLeft className="w-4 h-4" /> Назад
               </button>
-            )}
+              <span className="text-[13px] text-muted">Займёт меньше минуты</span>
+            </div>
           </div>
         </div>
       </div>

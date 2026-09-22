@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import { asset, type ServiceId } from "@/lib/config";
+import { SectionHeader } from "@/components/ui";
 
 const items: { image: string; tag: string; title: string; description: string; cta: string; preset: ServiceId }[] = [
   {
@@ -34,43 +36,41 @@ const items: { image: string; tag: string; title: string; description: string; c
 export default function Deliverables() {
   const { open } = useLead();
   return (
-    <section className="bg-paper py-20 md:py-24 px-5 md:px-12 font-sans">
-      <div className="max-w-[1200px] mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
-          <h2 className="font-display font-semibold text-[28px] md:text-[44px] text-ink leading-[1.15] tracking-[-0.02em] max-w-2xl">
-            Что остаётся у вас <span className="italic text-amber-deep">навсегда</span>
-          </h2>
-          <p className="text-muted max-w-sm">Не консультации «на словах», а инструменты, которые работают и после завершения проекта.</p>
-        </div>
+    <section className="bg-paper-2 py-20 md:py-28">
+      <div className="container-x">
+        <SectionHeader title="Что остаётся у вас навсегда" description="Не консультации «на словах», а инструменты, которые работают и после завершения проекта." />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {items.map((post) => (
-            <motion.div
+          {items.map((post, i) => (
+            <motion.button
               key={post.title}
-              whileHover={{ y: -3 }}
-              className="bg-white border border-line rounded-[20px] p-4 md:p-5 flex flex-col transition-all duration-200 hover:shadow-[0_12px_40px_rgba(11,17,32,0.1)] group"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              onClick={() =>
+                open({
+                  title: post.title,
+                  subtitle: "Оставьте контакты — расскажем, как это будет выглядеть для вашей компании, и назовём сроки.",
+                  cta: post.cta,
+                  source: "deliverable-" + post.preset,
+                  preset: [post.preset],
+                })
+              }
+              className="group text-left bg-white border border-line rounded-2xl overflow-hidden flex flex-col transition hover:shadow-[0_16px_40px_rgba(13,21,38,0.08)]"
             >
-              <div className="relative w-full h-[220px] md:h-[240px] rounded-[14px] overflow-hidden mb-5">
+              <div className="relative w-full aspect-[16/10] overflow-hidden">
                 <img src={asset(post.image)} alt={post.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                <span className="absolute top-3 left-3 text-[11px] font-bold uppercase tracking-wider bg-amber text-ink rounded-full px-3 py-1">{post.tag}</span>
+                <span className="absolute top-4 left-4 text-[12px] font-semibold bg-white/95 text-ink rounded-md px-2.5 py-1">{post.tag}</span>
               </div>
-              <h3 className="font-bold text-[18px] text-ink leading-[1.35] mb-2.5">{post.title}</h3>
-              <p className="text-[14px] text-muted leading-[1.6] mb-5">{post.description}</p>
-              <button
-                onClick={() =>
-                  open({
-                    title: post.title,
-                    subtitle: "Оставьте контакты — расскажем, как это будет выглядеть для вашей компании, и назовём сроки.",
-                    cta: post.cta,
-                    source: "deliverable-" + post.preset,
-                    preset: [post.preset],
-                  })
-                }
-                className="mt-auto text-[14px] font-bold text-ink inline-flex items-center gap-1.5 hover:text-amber-deep transition-colors w-fit"
-              >
-                {post.cta} <span className="text-[16px] leading-none">↳</span>
-              </button>
-            </motion.div>
+              <div className="p-6 flex flex-col flex-1">
+                <h3 className="font-display font-semibold text-[19px] text-ink leading-snug">{post.title}</h3>
+                <p className="mt-2 text-[15px] text-muted leading-relaxed">{post.description}</p>
+                <span className="mt-auto pt-6 text-[14px] font-semibold text-accent inline-flex items-center gap-2">
+                  {post.cta} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </span>
+              </div>
+            </motion.button>
           ))}
         </div>
       </div>

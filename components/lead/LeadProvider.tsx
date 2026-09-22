@@ -121,7 +121,7 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
   }
 
   const field =
-    "w-full h-12 rounded-xl bg-white border border-line px-4 text-[15px] text-ink placeholder:text-muted/70 outline-none focus:border-amber focus:ring-4 focus:ring-amber/15 transition";
+    "w-full h-12 rounded-lg bg-white border border-line px-4 text-[15px] text-ink placeholder:text-muted/70 outline-none focus:border-accent focus:ring-4 focus:ring-accent/10 transition";
 
   return (
     <motion.div
@@ -139,13 +139,13 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 60, opacity: 0 }}
         transition={{ type: "spring", damping: 28, stiffness: 300 }}
-        className="relative w-full sm:max-w-[560px] max-h-[94dvh] overflow-y-auto bg-paper rounded-t-[28px] sm:rounded-[28px] shadow-2xl"
+        className="relative w-full sm:max-w-[560px] max-h-[94dvh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl"
       >
         <div className="sm:hidden mx-auto mt-3 h-1.5 w-12 rounded-full bg-ink/15" />
         <button
           onClick={onClose}
           aria-label="Закрыть"
-          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-ink/5 hover:bg-ink/10 flex items-center justify-center transition z-10"
+          className="absolute top-4 right-4 w-10 h-10 rounded-lg border border-line hover:bg-paper flex items-center justify-center transition z-10"
         >
           <X className="w-5 h-5" />
         </button>
@@ -156,25 +156,25 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 12 }}
-              className="mx-auto w-20 h-20 rounded-full bg-amber flex items-center justify-center shadow-[0_12px_40px_rgba(242,165,58,0.45)]"
+              className="mx-auto w-16 h-16 rounded-xl bg-accent flex items-center justify-center"
             >
-              <Check className="w-10 h-10 text-ink stroke-[3]" />
+              <Check className="w-8 h-8 text-white" strokeWidth={2.5} />
             </motion.div>
-            <h3 className="font-display text-2xl font-semibold mt-7">Заявка у нас</h3>
+            <h3 className="font-display text-2xl font-semibold mt-6">Заявка у нас</h3>
             <p className="text-muted mt-3 max-w-sm mx-auto leading-relaxed">
               Перезвоним в течение 15 минут в рабочее время ({site.hours}). Хотите быстрее — позвоните сами.
             </p>
             <a
               href={site.phoneHref}
-              className="mt-7 inline-flex items-center gap-2 rounded-full bg-ink text-white px-6 py-3.5 font-semibold hover:bg-ink-3 transition"
+              className="mt-7 inline-flex items-center gap-2 rounded-lg bg-ink text-white px-6 h-12 font-semibold hover:bg-ink-3 transition"
             >
               <Phone className="w-4 h-4" /> {site.phone}
             </a>
           </div>
         ) : (
           <form onSubmit={submit} className="px-6 sm:px-10 pt-6 sm:pt-10 pb-8" noValidate>
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] uppercase text-amber-deep">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse" /> Ответим за 15 минут
+            <span className="inline-flex items-center gap-2 text-[13px] font-medium text-muted">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Ответим за 15 минут
             </span>
             <h3 className="font-display text-[22px] sm:text-[26px] leading-[1.15] font-semibold mt-3 pr-10">{opts.title}</h3>
             {opts.subtitle && <p className="text-muted mt-3 text-[15px] leading-relaxed">{opts.subtitle}</p>}
@@ -183,8 +183,8 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
               <ul className="mt-5 grid gap-2">
                 {opts.perks.map((p) => (
                   <li key={p} className="flex items-start gap-2.5 text-[14px] text-ink/80">
-                    <span className="mt-0.5 w-5 h-5 rounded-md bg-amber/20 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-amber-deep stroke-[3]" />
+                    <span className="mt-0.5 w-5 h-5 rounded bg-accent/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-accent stroke-[3]" />
                     </span>
                     {p}
                   </li>
@@ -228,17 +228,17 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
                         onClick={() => toggle(s.id)}
                         aria-pressed={on}
                         className={
-                          "flex items-center gap-2.5 text-left rounded-xl border px-3.5 py-3 text-[13px] font-medium transition " +
-                          (on ? "border-amber bg-amber/10 text-ink" : "border-line bg-white text-ink/70 hover:border-ink/25")
+                          "flex items-center gap-2.5 text-left rounded-lg border px-3.5 py-3 text-[13px] font-medium transition " +
+                          (on ? "border-accent bg-accent/[0.06] text-ink" : "border-line bg-white text-ink/70 hover:border-ink/25")
                         }
                       >
                         <span
                           className={
                             "w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition " +
-                            (on ? "bg-amber border-amber" : "border-ink/20")
+                            (on ? "bg-accent border-accent" : "border-ink/20")
                           }
                         >
-                          {on && <Check className="w-3.5 h-3.5 text-ink stroke-[3]" />}
+                          {on && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
                         </span>
                         {s.label}
                       </button>
@@ -249,7 +249,7 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
             )}
 
             <label className="mt-5 flex items-start gap-3 text-[12px] text-muted leading-snug cursor-pointer">
-              <input type="checkbox" name="consent" defaultChecked className="mt-0.5 w-4 h-4 accent-[#f2a53a]" />
+              <input type="checkbox" name="consent" defaultChecked className="mt-0.5 w-4 h-4 accent-[#2f5bea]" />
               Согласен на обработку персональных данных в соответствии с 152-ФЗ
             </label>
 
@@ -258,7 +258,7 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
             <button
               type="submit"
               disabled={state === "sending"}
-              className="mt-5 w-full h-14 rounded-full bg-amber text-ink font-bold text-[15px] hover:bg-amber-2 active:scale-[0.98] transition shadow-[0_12px_32px_rgba(242,165,58,0.35)] flex items-center justify-center gap-2 disabled:opacity-70"
+              className="mt-5 w-full h-14 rounded-lg bg-accent text-white font-semibold text-[15px] hover:bg-accent-2 active:scale-[0.98] transition flex items-center justify-center gap-2 disabled:opacity-70"
             >
               {state === "sending" ? <Loader2 className="w-5 h-5 animate-spin" /> : opts.cta ?? "Отправить заявку"}
             </button>

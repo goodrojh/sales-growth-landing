@@ -1,18 +1,19 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, Send, MessageCircle, Mail, ArrowUpRight } from "lucide-react";
+import { Phone, Send, MessageCircle, Mail, ArrowRight } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import { asset, site, type ServiceId } from "@/lib/config";
+import { btn } from "@/components/ui";
 import { Logo } from "./Hero";
 
 export default function Footer() {
   const { open } = useLead();
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
-    const el = videoRef.current?.parentElement;
+    const el = wrapRef.current;
     if (!el) return;
     const io = new IntersectionObserver(([e]) => e.isIntersecting && setShowVideo(true), { rootMargin: "300px" });
     io.observe(el);
@@ -22,39 +23,38 @@ export default function Footer() {
   const svc = (title: string, preset: ServiceId) => () =>
     open({ title, subtitle: "Оставьте контакты — перезвоним в течение 15 минут.", source: "footer-" + preset, preset: [preset] });
 
-  return (
-    <section className="w-full bg-paper">
-      <div className="m-2 rounded-[24px] overflow-hidden relative min-h-[100svh] md:min-h-[820px] flex flex-col font-sans bg-ink">
-        <img src={asset("/media/city.webp")} alt="" className="absolute inset-0 w-full h-full object-cover z-0" loading="lazy" />
-        <video ref={videoRef} autoPlay muted loop playsInline preload="none" className="absolute inset-0 w-full h-full object-cover z-0">
-          {showVideo && <source src={asset("/media/city.mp4")} type="video/mp4" />}
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/30 to-ink/80 z-[1]" />
+  const linkCls = "text-white/60 text-[14px] hover:text-white transition text-left";
 
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-5 md:px-20 pt-20 pb-10 text-center">
+  return (
+    <footer className="w-full bg-ink">
+      {/* CTA */}
+      <div ref={wrapRef} className="relative overflow-hidden">
+        <img src={asset("/media/city.webp")} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+        {showVideo && (
+          <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
+            <source src={asset("/media/city.mp4")} type="video/mp4" />
+          </video>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/50 to-ink" />
+
+        <div className="container-x relative z-10 py-24 md:py-36 grid lg:grid-cols-12 gap-10 items-end">
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="font-display text-[36px] sm:text-[56px] md:text-[76px] font-semibold text-white leading-[1.02] tracking-[-0.03em] max-w-5xl"
+            transition={{ duration: 0.7 }}
+            className="lg:col-span-8 font-display text-[36px] sm:text-[52px] md:text-[64px] font-semibold text-white leading-[1.02] tracking-[-0.035em]"
           >
-            Сильный отдел продаж начинается <span className="text-gradient-amber italic">с&nbsp;одного звонка</span>
+            Сильный отдел продаж начинается <span className="text-accent-soft">с&nbsp;одного звонка</span>
           </motion.h2>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="mt-10 w-full max-w-[560px] flex flex-col sm:flex-row gap-3"
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="lg:col-span-4 flex flex-col gap-3"
           >
-            <a
-              href={site.phoneHref}
-              className="flex-1 h-16 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center gap-3 text-white text-[17px] font-semibold hover:bg-white/25 transition"
-            >
-              <Phone className="w-5 h-5 text-amber" /> {site.phone}
-            </a>
             <button
               onClick={() =>
                 open({
@@ -65,80 +65,83 @@ export default function Footer() {
                   variant: "quick",
                 })
               }
-              className="h-16 px-8 bg-amber text-ink rounded-full text-[14px] font-bold tracking-[0.06em] uppercase hover:bg-amber-2 transition whitespace-nowrap"
+              className={btn.primary + " h-14 w-full text-[16px]"}
             >
-              Заказать звонок
+              Заказать звонок <ArrowRight className="w-4 h-4" />
             </button>
+            <a href={site.phoneHref} className={btn.ghostDark + " h-14 w-full text-[16px]"}>
+              <Phone className="w-4 h-4" /> {site.phone}
+            </a>
           </motion.div>
-          <div className="mt-5 flex items-center gap-3">
-            {[
-              { href: site.telegram, icon: Send, label: "Telegram" },
-              { href: site.whatsapp, icon: MessageCircle, label: "WhatsApp" },
-              { href: "mailto:" + site.email, icon: Mail, label: "Почта" },
-            ].map((s) => (
-              <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label} className="w-11 h-11 rounded-full border border-white/25 flex items-center justify-center text-white hover:bg-white/10 transition">
-                <s.icon className="w-4.5 h-4.5" />
-              </a>
-            ))}
+        </div>
+      </div>
+
+      {/* Footer bar */}
+      <div className="container-x py-12 md:py-16 border-t border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8">
+          <div className="col-span-2 md:col-span-5 text-white">
+            <Logo />
+            <p className="mt-5 text-white/55 text-[14px] leading-relaxed max-w-[340px]">
+              Подбор, обучение и системы премирования для отделов продаж. 20+ лет опыта построения систем управления персоналом в продажах.
+            </p>
+            <div className="mt-6 flex gap-2">
+              {[
+                { href: site.telegram, icon: Send, label: "Telegram" },
+                { href: site.whatsapp, icon: MessageCircle, label: "WhatsApp" },
+                { href: "mailto:" + site.email, icon: Mail, label: "Почта" },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.label}
+                  className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 transition"
+                >
+                  <s.icon className="w-[18px] h-[18px]" strokeWidth={1.6} />
+                </a>
+              ))}
+            </div>
+          </div>
+          <div className="md:col-span-2">
+            <h4 className="text-white text-[14px] font-semibold mb-4">Услуги</h4>
+            <ul className="space-y-3">
+              <li><button onClick={svc("Подбор специалистов по продажам", "podbor")} className={linkCls}>Подбор</button></li>
+              <li><button onClick={svc("Система обучения продавцов", "obuchenie")} className={linkCls}>Обучение</button></li>
+              <li><button onClick={svc("Система премирования (KPI)", "kpi")} className={linkCls}>Премирование (KPI)</button></li>
+              <li><button onClick={svc("Комплексная услуга", "complex")} className={linkCls}>Комплекс</button></li>
+            </ul>
+          </div>
+          <div className="md:col-span-2">
+            <h4 className="text-white text-[14px] font-semibold mb-4">Разделы</h4>
+            <ul className="space-y-3">
+              {[
+                ["Как работаем", "#process"],
+                ["Калькулятор KPI", "#calc"],
+                ["Условия", "#terms"],
+                ["Вопросы", "#faq"],
+              ].map(([l, h]) => (
+                <li key={h}>
+                  <a href={h} className={linkCls}>{l}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="col-span-2 md:col-span-3">
+            <h4 className="text-white text-[14px] font-semibold mb-4">Контакты</h4>
+            <ul className="space-y-3 text-[14px]">
+              <li><a href={site.phoneHref} className="text-white hover:text-accent-soft transition font-semibold">{site.phone}</a></li>
+              <li><a href={"mailto:" + site.email} className="text-white/60 hover:text-white transition">{site.email}</a></li>
+              <li className="text-white/60">{site.hours}</li>
+            </ul>
           </div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="relative z-10 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[24px] mx-3 md:mx-5 mb-3 md:mb-5 p-6 md:p-10 shadow-2xl"
-        >
-          <div className="flex flex-col md:flex-row justify-between gap-8 md:gap-10">
-            <div className="md:w-[32%] text-white">
-              <Logo />
-              <p className="mt-4 text-white/60 text-[13px] leading-relaxed max-w-[300px]">
-                Подбор, обучение и системы премирования для отделов продаж. 20+ лет опыта построения систем управления персоналом в продажах.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:flex gap-8 md:gap-14">
-              <div>
-                <h4 className="text-white text-[13px] font-semibold mb-4">Услуги</h4>
-                <ul className="space-y-2.5">
-                  <li><button onClick={svc("Подбор специалистов по продажам", "podbor")} className="text-white/60 text-[13px] hover:text-white transition text-left">Подбор специалистов</button></li>
-                  <li><button onClick={svc("Система обучения продавцов", "obuchenie")} className="text-white/60 text-[13px] hover:text-white transition text-left">Система обучения</button></li>
-                  <li><button onClick={svc("Система премирования (KPI)", "kpi")} className="text-white/60 text-[13px] hover:text-white transition text-left">Премирование (KPI)</button></li>
-                  <li><button onClick={svc("Комплексная услуга", "complex")} className="text-white/60 text-[13px] hover:text-white transition text-left">Комплекс −10%</button></li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-white text-[13px] font-semibold mb-4">Разделы</h4>
-                <ul className="space-y-2.5">
-                  {[
-                    ["Как работаем", "#process"],
-                    ["Калькулятор KPI", "#calc"],
-                    ["Условия", "#terms"],
-                    ["Вопросы", "#faq"],
-                  ].map(([l, h]) => (
-                    <li key={h}>
-                      <a href={h} className="text-white/60 text-[13px] hover:text-white transition">{l}</a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="col-span-2 md:col-span-1">
-                <h4 className="text-white text-[13px] font-semibold mb-4">Контакты</h4>
-                <ul className="space-y-2.5 text-[13px]">
-                  <li><a href={site.phoneHref} className="text-white/80 hover:text-white">{site.phone}</a></li>
-                  <li><a href={"mailto:" + site.email} className="text-white/60 hover:text-white">{site.email}</a></li>
-                  <li className="text-white/60">{site.hours}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8 pt-5 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 text-white/45 text-[12px]">
-            <span>© {new Date().getFullYear()} {site.brand} {site.brandSuffix}. Все права защищены.</span>
-            <a href="#" className="hover:text-white">Политика конфиденциальности</a>
-          </div>
-        </motion.div>
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between gap-3 text-white/40 text-[13px] pb-20 md:pb-0">
+          <span>© {new Date().getFullYear()} {site.brand} {site.brandSuffix}. Все права защищены.</span>
+          <a href="#" className="hover:text-white transition">Политика конфиденциальности</a>
+        </div>
       </div>
-    </section>
+    </footer>
   );
 }
 
@@ -158,11 +161,11 @@ export function MobileCtaBar() {
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           exit={{ y: 100 }}
-          className="md:hidden fixed bottom-0 inset-x-0 z-40 p-3 pb-[max(12px,env(safe-area-inset-bottom))] bg-gradient-to-t from-ink/60 to-transparent"
+          className="md:hidden fixed bottom-0 inset-x-0 z-40 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] bg-ink/95 backdrop-blur-xl border-t border-white/10"
         >
-          <div className="flex gap-2 rounded-full bg-ink/90 backdrop-blur-xl border border-white/10 p-1.5 shadow-2xl">
-            <a href={site.phoneHref} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0" aria-label="Позвонить">
-              <Phone className="w-5 h-5" />
+          <div className="flex gap-2">
+            <a href={site.phoneHref} className="w-12 h-12 rounded-lg border border-white/20 flex items-center justify-center text-white shrink-0" aria-label="Позвонить">
+              <Phone className="w-5 h-5" strokeWidth={1.8} />
             </a>
             <button
               onClick={() =>
@@ -174,9 +177,9 @@ export function MobileCtaBar() {
                   variant: "quick",
                 })
               }
-              className="flex-1 h-12 rounded-full bg-amber text-ink font-bold text-[15px] flex items-center justify-center gap-2"
+              className={btn.primary + " flex-1"}
             >
-              Оставить заявку <ArrowUpRight className="w-4 h-4" />
+              Оставить заявку
             </button>
           </div>
         </motion.div>

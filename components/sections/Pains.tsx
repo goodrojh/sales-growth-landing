@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { Flame, TrendingUp, Puzzle, CalendarClock, ArrowRight } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import { asset } from "@/lib/config";
+import { SectionHeader, IconBox, btn } from "@/components/ui";
 
 const pains = [
   {
     icon: Flame,
     title: "HR-менеджер перегружен",
     text: "Вакансии продавцов висят месяцами, а на собеседования приходят «не те».",
-    fix: "Берём подбор продажников на себя целиком",
+    fix: "Берём подбор продажников на себя",
   },
   {
     icon: TrendingUp,
@@ -22,55 +23,58 @@ const pains = [
     icon: Puzzle,
     title: "Нужен комплексный подход",
     text: "Наём, обучение и мотивация живут отдельно и не дают результата.",
-    fix: "Связываем подбор, обучение и премию в одну систему",
+    fix: "Связываем всё в одну систему",
   },
   {
     icon: CalendarClock,
     title: "HR в штат держать невыгодно",
     text: "Задача проектная — платить постоянную зарплату за неё не хочется.",
-    fix: "Работаем проектно: платите только за результат этапа",
+    fix: "Работаем проектно, без найма в штат",
   },
 ];
 
 export default function Pains() {
   const { open } = useLead();
   return (
-    <section className="w-full px-5 md:px-8 py-20 md:py-[120px] bg-paper relative overflow-hidden">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-center">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7 }}
-          className="relative rounded-[32px] overflow-hidden aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] shadow-2xl shadow-ink/20"
-        >
-          <img src={asset("/media/hr-tired.webp")} alt="Перегруженный HR-менеджер вечером в офисе" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/10 to-transparent" />
-          <div className="absolute left-5 right-5 bottom-5 md:left-8 md:right-8 md:bottom-8">
-            <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-5 text-white">
-              <div className="text-[11px] font-bold tracking-[0.14em] uppercase text-amber">Знакомо?</div>
-              <p className="mt-2 font-display text-lg md:text-xl leading-snug">
-                «Опять 40 откликов — и ни одного, кто реально умеет продавать»
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <section className="w-full py-20 md:py-28 bg-paper">
+      <div className="container-x">
+        <SectionHeader
+          title="Когда мы особенно полезны"
+          description="Если узнали себя хотя бы в одном пункте — ваш отдел продаж недополучает выручку прямо сейчас."
+        />
 
-        <div>
-          <motion.h2
+        <div className="grid lg:grid-cols-12 gap-5 md:gap-6">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6 }}
-            className="font-display text-[30px] sm:text-4xl md:text-[46px] font-semibold leading-[1.1] tracking-[-0.02em]"
+            className="lg:col-span-5 relative rounded-2xl overflow-hidden min-h-[380px] lg:min-h-0"
           >
-            Когда мы <span className="italic text-amber-deep">особенно</span> полезны
-          </motion.h2>
-          <p className="mt-4 text-muted text-base md:text-lg max-w-xl">
-            Если узнали себя хотя бы в одном пункте — ваш отдел продаж недополучает выручку прямо сейчас.
-          </p>
+            <img src={asset("/media/hr-tired.webp")} alt="Перегруженный HR-менеджер вечером в офисе" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+              <p className="font-display text-white text-[20px] md:text-[22px] leading-snug font-semibold max-w-sm">
+                «Опять 40 откликов — и ни одного, кто реально умеет продавать»
+              </p>
+              <button
+                onClick={() =>
+                  open({
+                    title: "Разберём именно вашу ситуацию",
+                    subtitle: "Расскажите, что болит в отделе продаж, — предложим план на 90 дней и оценим бюджет.",
+                    cta: "Получить план на 90 дней",
+                    source: "pains",
+                    variant: "full",
+                  })
+                }
+                className={btn.white + " mt-6"}
+              >
+                Это про нас — что делать? <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
 
-          <div className="mt-8 grid sm:grid-cols-2 gap-4">
+          <div className="lg:col-span-7 grid sm:grid-cols-2 gap-5 md:gap-6">
             {pains.map((p, i) => (
               <motion.div
                 key={p.title}
@@ -78,35 +82,20 @@ export default function Pains() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="group relative rounded-[24px] bg-white border border-line p-6 overflow-hidden hover:border-amber transition-colors"
+                className="flex flex-col h-full rounded-2xl bg-white border border-line p-6 md:p-7 hover:border-accent/40 hover:shadow-[0_12px_32px_rgba(13,21,38,0.06)] transition"
               >
-                <div className="w-11 h-11 rounded-xl bg-ink text-amber flex items-center justify-center">
-                  <p.icon className="w-5 h-5" />
-                </div>
-                <h3 className="mt-4 font-bold text-[17px] leading-snug">{p.title}</h3>
-                <p className="mt-2 text-[14px] text-muted leading-relaxed">{p.text}</p>
-                <div className="mt-4 pt-4 border-t border-dashed border-line flex items-start gap-2 text-[13px] font-semibold text-ink">
-                  <ArrowRight className="w-4 h-4 text-amber-deep shrink-0 mt-0.5" />
-                  {p.fix}
+                <IconBox icon={p.icon} />
+                <h3 className="mt-6 font-display font-semibold text-[19px] leading-snug text-ink">{p.title}</h3>
+                <p className="mt-2 text-[15px] text-muted leading-relaxed">{p.text}</p>
+                <div className="mt-auto pt-6">
+                  <div className="pt-5 border-t border-line flex items-center gap-2.5 text-[14px] font-semibold text-ink">
+                    <ArrowRight className="w-4 h-4 text-accent shrink-0" />
+                    {p.fix}
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
-
-          <button
-            onClick={() =>
-              open({
-                title: "Разберём именно вашу ситуацию",
-                subtitle: "Расскажите, что болит в отделе продаж, — предложим план на 90 дней и оценим бюджет.",
-                cta: "Получить план на 90 дней",
-                source: "pains",
-                variant: "full",
-              })
-            }
-            className="mt-8 w-full sm:w-auto rounded-full px-8 py-4 bg-ink text-white font-bold hover:bg-ink-3 transition active:scale-95"
-          >
-            Это про нас — что делать?
-          </button>
         </div>
       </div>
     </section>

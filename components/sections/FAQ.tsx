@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, X, UserSearch, GraduationCap, FileSignature, Phone } from "lucide-react";
+import { Plus, Minus, Phone } from "lucide-react";
 import { useLead } from "@/components/lead/LeadProvider";
 import { site } from "@/lib/config";
+import { IconBox, btn } from "@/components/ui";
 
 interface FAQItem {
   question: string;
@@ -18,7 +19,7 @@ const faqData: Record<string, FAQItem[]> = {
     },
     {
       question: "Как вы проверяете, что кандидат действительно умеет продавать?",
-      answer: "Проводим скрининг по компетенциям: интервью и кейсы на реальные ситуации продаж — выявление потребностей, работа с возражениями, закрытие сделки. Затем собираем отзывы с прошлых мест работы.",
+      answer: "Проводим подбор по компетенциям: интервью и кейсы на реальные ситуации продаж — выявление потребностей, работа с возражениями, закрытие сделки. Затем собираем отзывы с прошлых мест работы.",
     },
     {
       question: "В каком виде я получу кандидатов?",
@@ -64,9 +65,9 @@ const faqData: Record<string, FAQItem[]> = {
 };
 
 const tabs = [
-  { id: "podbor", label: "Подбор", icon: UserSearch },
-  { id: "system", label: "Обучение и KPI", icon: GraduationCap },
-  { id: "terms", label: "Условия", icon: FileSignature },
+  { id: "podbor", label: "Подбор" },
+  { id: "system", label: "Обучение и KPI" },
+  { id: "terms", label: "Условия" },
 ];
 
 export default function FAQ() {
@@ -75,82 +76,80 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-paper py-20 md:py-[100px] px-5 md:px-[80px] font-sans scroll-mt-20">
-      <div className="max-w-[800px] mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="font-display text-[30px] md:text-[46px] font-semibold text-ink leading-tight tracking-[-0.02em] mb-3">Частые вопросы</h2>
-          <p className="text-[16px] text-muted">Коротко о том, что обычно спрашивают собственники и коммерческие директора</p>
-        </div>
+    <section id="faq" className="bg-paper py-20 md:py-28">
+      <div className="container-x grid lg:grid-cols-12 gap-10 lg:gap-8">
+        <div className="lg:col-span-4 lg:pr-6">
+          <h2 className="font-display text-[30px] sm:text-[36px] md:text-[44px] font-semibold text-ink leading-[1.08] tracking-[-0.025em]">Частые вопросы</h2>
+          <p className="mt-5 text-[16px] text-muted leading-relaxed">Коротко о том, что обычно спрашивают собственники и коммерческие директора.</p>
 
-        <div className="flex justify-start sm:justify-center gap-1 border-b border-line mb-6 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0">
-          {tabs.map((tab) => (
+          <div className="mt-8 rounded-2xl bg-white border border-line p-6">
+            <IconBox icon={Phone} />
+            <p className="mt-5 font-semibold text-[16px] text-ink">Не нашли свой вопрос?</p>
+            <p className="mt-1 text-[14px] text-muted">Эксперт ответит лично — {site.hours}</p>
             <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id);
-                setOpenIndex(null);
-              }}
-              className={
-                "inline-flex items-center gap-2 px-4 md:px-5 py-3 text-[15px] transition-all border-b-2 whitespace-nowrap " +
-                (activeTab === tab.id ? "text-ink font-bold border-amber" : "text-muted font-medium border-transparent")
+              onClick={() =>
+                open({
+                  title: "Задайте вопрос эксперту",
+                  subtitle: "Перезвоним и ответим на любые вопросы о подборе, обучении и KPI.",
+                  cta: "Задать вопрос",
+                  source: "faq",
+                  variant: "quick",
+                })
               }
+              className={btn.dark + " mt-5 w-full"}
             >
-              <tab.icon className={"w-4 h-4 " + (activeTab === tab.id ? "text-amber-deep" : "")} />
-              {tab.label}
+              Задать вопрос
             </button>
-          ))}
-        </div>
-
-        <div>
-          {faqData[activeTab].map((item, index) => (
-            <div key={item.question} className="border-b border-line py-5">
-              <button onClick={() => setOpenIndex(openIndex === index ? null : index)} className="w-full flex justify-between items-center gap-4 text-left">
-                <span className="text-[16px] font-semibold text-ink">{item.question}</span>
-                <span className={"w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition " + (openIndex === index ? "bg-amber text-ink" : "bg-ink/5 text-muted")}>
-                  {openIndex === index ? <X size={16} /> : <Plus size={16} />}
-                </span>
-              </button>
-              <AnimatePresence initial={false}>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-3 pr-10 text-[15px] text-ink/70 leading-[1.7]">{item.answer}</div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 bg-ink rounded-[20px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-amber/15 flex items-center justify-center">
-              <Phone className="w-5 h-5 text-amber" />
-            </div>
-            <div>
-              <p className="font-bold text-[16px] text-white">Не нашли свой вопрос?</p>
-              <p className="text-[14px] text-white/55">Эксперт ответит лично — {site.hours}</p>
-            </div>
           </div>
-          <button
-            onClick={() =>
-              open({
-                title: "Задайте вопрос эксперту",
-                subtitle: "Перезвоним и ответим на любые вопросы о подборе, обучении и KPI.",
-                cta: "Задать вопрос",
-                source: "faq",
-                variant: "quick",
-              })
-            }
-            className="w-full md:w-auto bg-amber text-ink rounded-full px-7 py-3.5 text-[15px] font-bold hover:bg-amber-2 transition"
-          >
-            Задать вопрос
-          </button>
+        </div>
+
+        <div className="lg:col-span-8">
+          <div className="inline-flex p-1 rounded-lg bg-paper-2 border border-line mb-4 max-w-full overflow-x-auto no-scrollbar">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setOpenIndex(null);
+                }}
+                className={
+                  "px-4 md:px-5 h-10 rounded-md text-[14px] font-medium whitespace-nowrap transition " +
+                  (activeTab === tab.id ? "bg-white text-ink shadow-sm" : "text-muted hover:text-ink")
+                }
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="border-t border-line">
+            {faqData[activeTab].map((item, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div key={item.question} className="border-b border-line">
+                  <button onClick={() => setOpenIndex(isOpen ? null : index)} className="w-full flex justify-between items-center gap-6 text-left py-5 md:py-6">
+                    <span className="text-[16px] md:text-[17px] font-semibold text-ink">{item.question}</span>
+                    <span className={"w-8 h-8 rounded-md border flex items-center justify-center shrink-0 transition " + (isOpen ? "border-accent text-accent" : "border-line text-muted")}>
+                      {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+                    </span>
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pb-6 pr-14 text-[15px] text-ink/70 leading-[1.7]">{item.answer}</div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
