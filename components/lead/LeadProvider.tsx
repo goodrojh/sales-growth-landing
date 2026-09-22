@@ -39,21 +39,29 @@ export function LeadProvider({ children }: { children: React.ReactNode }) {
     setOpts(o);
   }, []);
 
-  // Подгружаем окно заявки при первом взаимодействии (касание, прокрутка, наведение) — не мешает загрузке страницы
+  // Окно заявки подгружается в простое браузера после загрузки страницы (или при первом нажатии) —
+  // не во время прокрутки, чтобы не создавать подтормаживаний.
   useEffect(() => {
-    const events = ["pointerdown", "touchstart", "scroll", "keydown", "mousemove"] as const;
     let done = false;
     const pre = () => {
       if (done) return;
       done = true;
-      events.forEach((e) => window.removeEventListener(e, pre));
+      window.removeEventListener("pointerdown", pre);
+      window.removeEventListener("keydown", pre);
       loadModal();
     };
-    events.forEach((e) => window.addEventListener(e, pre, { passive: true, once: true }));
-    const t = window.setTimeout(pre, 8000);
+    window.addEventListener("pointerdown", pre, { passive: true });
+    window.addEventListener("keydown", pre);
+    const idleLoad = () => {
+      const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+      window.setTimeout(() => (w.requestIdleCallback ? w.requestIdleCallback(pre, { timeout: 4000 }) : pre()), 2500);
+    };
+    if (document.readyState === "complete") idleLoad();
+    else window.addEventListener("load", idleLoad, { once: true });
     return () => {
-      events.forEach((e) => window.removeEventListener(e, pre));
-      clearTimeout(t);
+      window.removeEventListener("pointerdown", pre);
+      window.removeEventListener("keydown", pre);
+      window.removeEventListener("load", idleLoad);
     };
   }, []);
   const close = useCallback(() => setOpts(null), []);

@@ -28,6 +28,30 @@ export default function RevealRoot() {
       els.forEach((el) => io!.observe(el));
     }
 
+    // Пока пользователь читает первый экран, по одной в простое браузера «прогреваем» секции ниже:
+    // просчитываем их и декодируем картинки — при прокрутке не будет подтормаживаний.
+    type IdleWin = Window & { requestIdleCallback?: (cb: (d: { timeRemaining: () => number }) => void, o?: { timeout: number }) => number };
+    const idle = (cb: (d: { timeRemaining: () => number }) => void) =>
+      (window as IdleWin).requestIdleCallback ? (window as IdleWin).requestIdleCallback!(cb, { timeout: 3000 }) : window.setTimeout(() => cb({ timeRemaining: () => 8 }), 200);
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section:not(:first-child)"));
+    let warmIdx = 0;
+    let warmStopped = false;
+    const warm = (d: { timeRemaining: () => number }) => {
+      if (warmStopped) return;
+      while (warmIdx < sections.length && d.timeRemaining() > 6) {
+        const s = sections[warmIdx++];
+        s.style.contentVisibility = "visible";
+        s.querySelectorAll<HTMLImageElement>("img[loading=lazy]").forEach((img) => {
+          img.loading = "eager";
+          img.decode?.().catch(() => {});
+        });
+      }
+      if (warmIdx < sections.length) idle(warm);
+    };
+    const startWarm = () => window.setTimeout(() => idle(warm), 1500);
+    if (document.readyState === "complete") startWarm();
+    else window.addEventListener("load", startWarm, { once: true });
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const offset = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
     let timers: number[] = [];
@@ -84,6 +108,8 @@ export default function RevealRoot() {
     document.addEventListener("click", onClick);
 
     return () => {
+      warmStopped = true;
+      window.removeEventListener("load", startWarm);
       io?.disconnect();
       document.removeEventListener("click", onClick);
       timers.forEach(clearTimeout);
