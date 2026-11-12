@@ -87,17 +87,17 @@ export default function Services() {
             <div className="w-full flex-1 flex items-center justify-center pointer-events-none select-none py-8">
               <div className="w-full max-w-[340px] bg-white border border-line rounded-xl p-5 shadow-[0_24px_60px_rgba(13,21,38,0.08)]">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-[12px] font-semibold text-ink/60">Курс менеджера</span>
+                  <span className="text-[12px] font-semibold text-ink/60">Курс менеджера по продажам</span>
                   <BookOpen className="w-4 h-4 text-accent" strokeWidth={1.6} />
                 </div>
                 <Reveal className="space-y-3">
                   {[
-                    { label: "Продукт и ассортимент", p: 100 },
-                    { label: "Этапы сделки и скрипты", p: 80 },
-                    { label: "Работа с возражениями", p: 55 },
+                    { label: "Описание продукта", p: 100 },
+                    { label: "Этапы продаж, включая скрипты по работе с популярными возражениями", p: 80 },
+                    { label: "Тестирование знаний", p: 55 },
                   ].map((item, i) => (
                     <div key={item.label} className="rounded-lg p-3 border border-line">
-                      <div className="flex justify-between text-[12px] font-semibold text-ink/80">
+                      <div className="flex items-start justify-between gap-3 text-[12px] leading-snug font-semibold text-ink/80">
                         <span>{item.label}</span>
                         <span className="text-accent">{item.p}%</span>
                       </div>

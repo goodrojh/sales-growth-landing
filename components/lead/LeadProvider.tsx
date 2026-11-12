@@ -14,8 +14,8 @@ export interface LeadOptions {
   cta?: string;
   /** Откуда пришла заявка — уходит в CRM */
   source: string;
-  /** quick — имя + телефон; full — полная анкета */
-  variant?: "quick" | "full";
+  /** quick — имя + телефон; full — полная анкета; message — письмо (имя, контакт, текст) */
+  variant?: "quick" | "full" | "message";
   /** Предвыбранные услуги */
   preset?: ServiceId[];
   /** Доп. контекст (роль, ответы квиза) — уходит вместе с заявкой */

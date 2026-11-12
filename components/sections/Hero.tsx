@@ -19,7 +19,7 @@ function Stat({ value, prefix = "", suffix = "" }: { value: number; prefix?: str
 const stats = [
   { value: <Stat value={20} suffix="+" />, title: "лет опыта", text: "в построении систем продаж" },
   { value: <Stat value={2} prefix="×" />, title: "рост валовой выручки", text: "и маржинальной прибыли" },
-  { value: <Stat value={70} prefix="+" suffix="%" />, title: "эффективность", text: "персонала отдела продаж" },
+  { value: <Stat value={70} prefix="+" suffix="%" />, title: "рост эффективности", text: "персонала отдела продаж" },
   { value: <Stat value={1} />, title: "бесплатная замена", text: "если не прошёл испытательный срок" },
 ];
 
@@ -48,8 +48,12 @@ export default function Hero() {
         <div className="container-x flex-1 flex flex-col items-center justify-center text-center pt-[112px] md:pt-[150px] pb-10 md:pb-12">
           <h1 className="font-display font-semibold text-[34px] min-[400px]:text-[38px] sm:text-5xl md:text-6xl lg:text-[72px] leading-[1.05] tracking-[-0.035em] text-white max-w-5xl">
             Отдел продаж, который
-            <br className="hidden sm:block" /> приносит <span className="text-accent-soft">в&nbsp;2&nbsp;раза</span> больше
+            <br className="hidden sm:block" /> приносит <span className="text-accent-soft">в&nbsp;2&nbsp;раза</span> больше прибыли
           </h1>
+
+          <p className="anim-rise d-1 mt-4 md:mt-5 font-display font-semibold text-[20px] sm:text-2xl md:text-[28px] leading-snug tracking-[-0.02em] text-white">
+            <span className="text-accent-soft">+70%</span> рост эффективности персонала отдела продаж
+          </p>
 
           <p className="anim-rise d-2 mt-5 md:mt-6 text-[16px] md:text-lg text-white/80 max-w-[620px] leading-relaxed">
             Подберём сильных менеджеров и&nbsp;РОП, выстроим обучение и&nbsp;премирование по&nbsp;KPI. 20+ лет строим системы

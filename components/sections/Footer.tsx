@@ -5,6 +5,15 @@ import { btn } from "@/components/ui";
 import { BgVideo } from "@/components/ui/perf";
 import { Img } from "@/components/ui/Img";
 import { Logo } from "@/components/ui/Logo";
+import type { LeadOptions } from "@/components/lead/LeadProvider";
+
+const writeLead: LeadOptions = {
+  title: "Написать нам",
+  subtitle: "Задайте вопрос или опишите задачу — ответим на указанный телефон или почту.",
+  cta: "Отправить сообщение",
+  source: "footer-write",
+  variant: "message",
+};
 
 export default function Footer() {
 
@@ -41,9 +50,14 @@ export default function Footer() {
             >
               Заполнить анкету <ArrowRight className="w-4 h-4" />
             </LeadButton>
-            <a href={site.phoneHref} className={btn.ghostDark + " h-14 w-full text-[16px]"}>
-              <Phone className="w-4 h-4" /> {site.phone}
-            </a>
+            <div className="grid grid-cols-2 gap-3">
+              <a href={site.phoneHref} className={btn.ghostDark + " h-14 w-full text-[15px] px-3"}>
+                <Phone className="w-4 h-4 shrink-0" /> <span className="whitespace-nowrap">{site.phone}</span>
+              </a>
+              <LeadButton lead={writeLead} className={btn.ghostDark + " h-14 w-full text-[15px] px-3"}>
+                <Mail className="w-4 h-4" /> Написать
+              </LeadButton>
+            </div>
           </div>
         </div>
       </div>
@@ -60,7 +74,6 @@ export default function Footer() {
               {[
                 { href: site.telegram, icon: Send, label: "Telegram" },
                 { href: site.whatsapp, icon: MessageCircle, label: "WhatsApp" },
-                { href: "mailto:" + site.email, icon: Mail, label: "Почта" },
               ].map((s) => (
                 <a
                   key={s.label}
@@ -73,6 +86,13 @@ export default function Footer() {
                   <s.icon className="w-[18px] h-[18px]" strokeWidth={1.6} />
                 </a>
               ))}
+              <LeadButton
+                lead={writeLead}
+                aria-label="Написать"
+                className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 transition"
+              >
+                <Mail className="w-[18px] h-[18px]" strokeWidth={1.6} />
+              </LeadButton>
             </div>
           </div>
           <div className="md:col-span-2">
@@ -103,7 +123,11 @@ export default function Footer() {
             <h3 className="text-white text-[14px] font-semibold mb-4">Контакты</h3>
             <ul className="space-y-0.5 text-[14px]">
               <li><a href={site.phoneHref} className="inline-flex items-center min-h-10 text-white hover:text-accent-soft transition font-semibold">{site.phone}</a></li>
-              <li><a href={"mailto:" + site.email} className="inline-flex items-center min-h-10 text-white/70 hover:text-white transition">{site.email}</a></li>
+              <li>
+                <LeadButton lead={writeLead} className="inline-flex items-center gap-2 min-h-10 text-white/70 hover:text-white transition">
+                  <Mail className="w-4 h-4" strokeWidth={1.6} /> Написать
+                </LeadButton>
+              </li>
               <li className="min-h-10 flex items-center text-white/70">{site.hours}</li>
             </ul>
           </div>

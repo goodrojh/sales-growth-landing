@@ -42,8 +42,18 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const isMessage = variant === "message";
     const digits = phone.replace(/\D/g, "");
-    if (digits.length < 11) {
+    if (isMessage) {
+      if (!String(fd.get("contact") || "").trim()) {
+        setError("Укажите телефон или e-mail для ответа");
+        return;
+      }
+      if (!String(fd.get("message") || "").trim()) {
+        setError("Напишите сообщение");
+        return;
+      }
+    } else if (digits.length < 11) {
       setError("Проверьте номер телефона");
       return;
     }
@@ -53,7 +63,16 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
     }
     setError("");
     setState("sending");
-    const payload = {
+    const payload = isMessage ? {
+      _subject: "Письмо с сайта «" + site.brand + " " + site.brandSuffix + "»",
+      _template: "table",
+      name: fd.get("name") || "",
+      contact: fd.get("contact") || "",
+      message: fd.get("message") || "",
+      source: opts.source,
+    } : {
+      _subject: "Заявка с сайта: " + opts.title,
+      _template: "table",
       source: opts.source,
       company: fd.get("company") || "",
       name: fd.get("name") || "",
@@ -65,11 +84,12 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
     };
     try {
       if (site.formEndpoint) {
-        await fetch(site.formEndpoint, {
+        const res = await fetch(site.formEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify(payload),
         });
+        if (!res.ok) throw new Error(String(res.status));
       } else {
         await new Promise((r) => setTimeout(r, 700));
       }
@@ -120,9 +140,11 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
             >
               <Check className="w-8 h-8 text-white" strokeWidth={2.5} />
             </m.div>
-            <h3 className="font-display text-2xl font-semibold mt-6">Заявка у нас</h3>
+            <h3 className="font-display text-2xl font-semibold mt-6">{variant === "message" ? "Сообщение отправлено" : "Заявка у нас"}</h3>
             <p className="text-muted mt-3 max-w-sm mx-auto leading-relaxed">
-              Перезвоним в течение 15 минут в рабочее время ({site.hours}). Хотите быстрее — позвоните сами.
+              {variant === "message"
+                ? "Ответим в рабочее время (" + site.hours + "). Хотите быстрее — позвоните."
+                : "Перезвоним в течение 15 минут в рабочее время (" + site.hours + "). Хотите быстрее — позвоните сами."}
             </p>
             <a
               href={site.phoneHref}
@@ -152,6 +174,19 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
               </ul>
             )}
 
+            {variant === "message" ? (
+              <div className="mt-6 grid gap-3">
+                <input name="name" placeholder="Как к вам обращаться" className={field} autoComplete="name" />
+                <input name="contact" placeholder="Телефон или e-mail для ответа" className={field} autoComplete="email" required />
+                <textarea
+                  name="message"
+                  rows={5}
+                  placeholder="Ваше сообщение"
+                  className={field + " h-auto py-3 resize-y min-h-[120px]"}
+                  required
+                />
+              </div>
+            ) : (
             <div className="mt-6 grid gap-3">
               {variant === "full" && (
                 <input name="company" placeholder="Наименование организации" className={field} autoComplete="organization" />
@@ -174,6 +209,7 @@ function LeadModal({ opts, onClose }: { opts: LeadOptions; onClose: () => void }
               />
               {variant === "full" && <input name="email" type="email" placeholder="Электронная почта" className={field} autoComplete="email" />}
             </div>
+            )}
 
             {variant === "full" && (
               <fieldset className="mt-5">

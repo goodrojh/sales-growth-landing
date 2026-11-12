@@ -2,15 +2,14 @@
 export const site = {
   brand: "Вектор",
   brandSuffix: "продаж",
-  phone: "+7 (900) 000-00-00",
-  phoneHref: "tel:+79000000000",
-  email: "hello@vector-sales.ru",
+  phone: "+7 (981) 174-61-46",
+  phoneHref: "tel:+79811746146",
   telegram: "https://t.me/",
-  whatsapp: "https://wa.me/79000000000",
+  whatsapp: "https://wa.me/79811746146",
   hours: "Пн–Пт, 9:00–19:00 (МСК)",
-  // URL для приёма заявок (Formspree, Telegram-бот, CRM webhook).
-  // Пустая строка — заявка не отправляется, показывается только экран успеха.
-  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || "",
+  // Приём заявок и писем: FormSubmit пересылает их на почту владельца.
+  // Сам адрес на сайте не показывается. Можно переопределить NEXT_PUBLIC_FORM_ENDPOINT.
+  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || "https://formsubmit.co/ajax/oksanapavlikova@yandex.ru",
 };
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
